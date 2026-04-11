@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link href="https://cdn.jsdelivr.net/npm/flowbite@4.0.1/dist/flowbite.min.css" rel="stylesheet" />
-     @vite('resources/css/app.css')
     <title>Document</title>
 </head>
 <body>
@@ -36,7 +35,7 @@
                         <input type="password" name="password" class="form-control mb-3 w-full pl-10 pr- py-2 border border-gray-300 bg-white rounded-md focus:outline-none focus:ring focus:ring-black " placeholder="Masukan Password" aria-label="password">
                     </div>
                     
-                    <button type="submit" class="bg-[#F5B22E] text-white py-2 rounded-md font-semibold hover:bg-[#FFD27A] w-full transition duration-200 text-center">Masuk</button>
+                    <button type="submit" class="bg-blue-500 text-white py-2 rounded-md font-semibold hover:bg-blue-300 w-full transition duration-200 text-center">Masuk</button>
                 </form>
             </div>
         </div>

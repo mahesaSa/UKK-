@@ -1,0 +1,34 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('transaksis', function (Blueprint $table) {
+            $table->id('id_transaksi');
+            $table->unsignedBigInteger('user_id');
+            $table->ForeignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->unsignedBigInteger('id_buku');
+            $table->ForeignId('id_buku')->reference('id_buku')->on('bukus')->onDelete('cascade');   
+            $table->date('tgl_pinjam');
+            $table->date('tgl_pengembalian')->nullable();
+            $table->enum('status_transaksi',['Dipinjam'],['Kembali'],['Terlambat']);
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('transaksis');
+    }
+};
