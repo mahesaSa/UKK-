@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Http\Models\User;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 
 class UserController extends Controller
@@ -12,7 +13,7 @@ class UserController extends Controller
     public function index()
     {
         $users = User::all();
-        return view('admin.siswa.index');
+        return view('admin.siswa.index', compact('users'));
     }
 
     public function create()
@@ -22,7 +23,7 @@ class UserController extends Controller
 
     public function storeAdmin(Request $request)
     {       
-        $validated = $request->validated([
+        $validated = $request->validate([
                 'username' => 'required|unique,username',
                 'email' => 'required|unique,users,email',
                 'password' => 'required|min:6|confirmed',
@@ -42,9 +43,9 @@ class UserController extends Controller
 
     public function storeSiswa(Request $request)
     {
-        $validated = $request->validated([
-            'username' => 'required|unique,username',
-            'email' => 'required|unique,users,email',
+        $validated = $request->validate([
+            'username' => 'required|unique:users,username',
+            'email' => 'required|unique:users,email',
             'password' => 'required|min:6|confirmed',
             'nisn' => 'required|unique:users,nisn',
             'kelas' => 'required',
@@ -58,21 +59,23 @@ class UserController extends Controller
                 'nisn' => $validated['nisn'],
                 'kelas'=> $validated['kelas'],
         ]);
+
+        return redirect()->route('users.index')->with('success, Siswa berhasil ditambahkan');
     }
 
-    public function show(User $users)
+    public function show(User $user)
     {
-        return view('admin.siswa.show',compact('users'));
+        return view('admin.siswa.show',compact('user'));
     }
 
     public function edit(User $user)
     {
-        return view('admin.siswa.edit',compact('users'));
+        return view('admin.siswa.edit',compact('user'));
     }
 
-    public function update(Request $request)
+    public function update(Request $request, User $user)
     {
-        $validated = $request->validated([
+        $validated = $request->validate([
             'username' => 'required|unique,username'. $user->id,
             'email' => 'required|unique,users,email'. $user->id,
             'role' => 'required|in:admin,siswa',
@@ -96,7 +99,7 @@ class UserController extends Controller
         return redirect()->route('siswa.index')->with("success, User berhasil diupdated");
     }
 
-    public function destroy()
+    public function destroy(User $user)
     {
         $user->delete();
         return redirect()->route('users.index')->with('success, User berhasil dihapus');

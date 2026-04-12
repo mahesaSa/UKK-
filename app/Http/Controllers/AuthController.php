@@ -41,7 +41,7 @@ class AuthController extends Controller
         return view('auth.loginsiswa');
     }
 
-    public function loginSiswa()
+    public function loginSiswa(Request $request)
     {
         $credentials = $request->validate([
             'nisn' => 'required',
@@ -50,12 +50,12 @@ class AuthController extends Controller
 
         $credentials['role'] = 'siswa';
 
-        if(Auth::attemp($credentials)){
-            $request->session()->regeneratedToken();
+        if(Auth::attempt($credentials)){
+            $request->session()->regenerate();
             return redirect()->route('PageSiswa.home'); 
         }
 
-        return back()->wihtErrors([
+        return back()->withErrors([
             'nisn'=>'nisn Salah, Masukan nomor nisn dengan benar'
         ]);
     }
@@ -65,7 +65,7 @@ class AuthController extends Controller
         Auth::logout();
 
         $request->session()->invalidate();
-        $request->session()->regeneratedToken();
+        $request->session()->regenerateToken();
 
         return redirect()->route('login.siswa')->with('Anda berhasil Logout');
     }   

@@ -55,7 +55,7 @@
                                 </div>
                                 <div>
                                     <span class="block font-semibold text-gray-800">{{ $user->username }}</span>
-                                    <span class="text-[10px] text-gray-400 uppercase tracking-tighter italic">ID: #{{ $user->id }}</span>
+                                    <span class="text-[10px] text-gray-400 uppercase tracking-tighter italic">ID: #{{ $loop->index + 1 }}</span>
                                 </div>
                             </div>
                         </td>

@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use app\Http\Models\User;
-use app\Http\Models\Buku;
-use app\Http\Models\Transaksi;
+use App\Models\User;
+use app\Models\Buku;
+use App\Models\Transaksi;
 use Carbon\Carbon;
 
 class TransaksiController extends Controller
@@ -46,6 +46,47 @@ class TransaksiController extends Controller
         return view('admin.transaksi.index', compact(
             'transaksi', 'total', 'dipinjam', 'terlambat', 'dikembalikan'
         ));
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'user_id'          => 'required|exists:users,id',
+            'buku_id'          => 'required|exists:bukus,id_buku',
+            'tgl_pinjam'       => 'required|date',
+            'tgl_pengembalian' => 'required|date|after:tgl_pinjam',
+        ]);
+
+        Transaksi::create([
+            'user_id'          => $request->user_id,
+            'buku_id'          => $request->buku_id,
+            'tgl_pinjam'       => $request->tgl_pinjam,
+            'tgl_pengembalian' => $request->tgl_pengembalian,
+            'status_transaksi' => 'Dipinjam',
+        ]);
+
+        // Gunakan where id_buku jika Primary Key Buku adalah id_buku
+        Buku::where('id_buku', $request->buku_id)->decrement('stok');
+
+        return redirect()->route('transaksi.index')->with('success', 'Transaksi berhasil ditambahkan!');
+    }
+
+    public function kembalikan($id)
+    {
+        $transaksi = Transaksi::where('id_transaksi', $id)->firstOrFail();
+
+        if ($transaksi->status_transaksi === 'Kembali') {
+            return back()->with('error', 'Buku sudah dikembalikan.');
+        }
+
+        $transaksi->update([
+            'status_transaksi'        => 'Kembali',
+            'tgl_pengembalian_aktual' => Carbon::today(),
+        ]);
+
+        Buku::where('id_buku', $transaksi->buku_id)->increment('stok');
+
+        return back()->with('success', 'Buku berhasil dikembalikan!');
     }
 
 }

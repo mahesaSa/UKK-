@@ -13,13 +13,11 @@ return new class extends Migration
     {
         Schema::create('transaksis', function (Blueprint $table) {
             $table->id('id_transaksi');
-            $table->unsignedBigInteger('user_id');
-            $table->ForeignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->unsignedBigInteger('id_buku');
-            $table->ForeignId('id_buku')->reference('id_buku')->on('bukus')->onDelete('cascade');   
+            $table->foreignId('user_id')->constrained('users'); 
+            $table->foreignId('id_buku')->references('id_bukus')->on('bukus'); 
             $table->date('tgl_pinjam');
             $table->date('tgl_pengembalian')->nullable();
-            $table->enum('status_transaksi',['Dipinjam'],['Kembali'],['Terlambat']);
+            $table->enum('status_transaksi', ['Dipinjam','Kembali','Terlambat']);
             $table->timestamps();
         });
     }
